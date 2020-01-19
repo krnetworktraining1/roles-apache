@@ -1,0 +1,31 @@
+- include_vars: abc.yml
+
+
+- name: install htpd
+  yum:
+     name: "{{ web_svc }}"
+     state: installed
+
+
+- name: start httpd
+  service:
+      name: "{{ web_svc }}"
+      state: started
+
+
+- name: copy  index.html page into documenroot
+  copy:
+     src: code/
+     dest: "{{ web_root }}"
+
+- name: copy jijna file
+  template:
+      src: apache/conf.j2
+      dest: "{{ web_conf }}/web.conf"
+  notify: restart_apache
+
+
+- name: include  ssl  tasks
+  import_tasks: ssl.yml 
+
+
